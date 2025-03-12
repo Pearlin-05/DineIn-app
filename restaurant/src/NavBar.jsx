@@ -11,7 +11,7 @@ function NavBar() {
     <div>
       <nav className="navbar navbar-expand">
         <a className="navbar-brand" href='/'>
-          <img src="/DI.png" alt='DineIn Logo' style={{ height: "50px" }} />
+          <img src={`${process.env.PUBLIC_URL}/DI.png`} alt='DineIn Logo' style={{ height: "50px" }} />
         </a>
        
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
