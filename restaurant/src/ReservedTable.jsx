@@ -16,7 +16,7 @@ function ReservedTable() {
   };
 
   return (
-    <div >
+    <div>
       <div className="reserved-container">
         <h1>Your Reserved Tables</h1>
         {reservations.length === 0 ? (
@@ -24,9 +24,10 @@ function ReservedTable() {
         ) : (
           reservations.map((res, index) => (
             <div key={index} className="reserved-card">
-              <img src={res.image} alt={res.name} className="restaurant-img" />
+              <img src={res.restaurantImage} alt={res.restaurantName} className="restaurant-img" />
               <div className="reserved-details">
-                <h3>{res.name}</h3>
+                <h3>{res.restaurantName}</h3> 
+                <p>Name: {res.name}</p> 
                 <p>Reservation Time: {res.time}</p>
                 <button className="cancel-button" onClick={() => handleCancel(index)}>
                   Cancel

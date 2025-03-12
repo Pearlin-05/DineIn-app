@@ -3,30 +3,13 @@ import { useNavigate } from 'react-router-dom';
 
 function TableManagement({ restaurant }) {
     const totalTables = 10;
-    const [availableTables, setAvailableTables] = useState(totalTables);
+    const [availableTables] = useState(totalTables); 
     const navigate = useNavigate();
-
-    const reserveTable = () => {
-        if (availableTables > 0) {
-            setAvailableTables(availableTables - 1); 
-
-            const reservation = {
-                name: restaurant.name,
-                image: restaurant.image,
-                time: new Date().toLocaleString(), 
-            };
-            
-            const storedReservations = JSON.parse(localStorage.getItem("reservations")) || [];
-            storedReservations.push(reservation);
-            localStorage.setItem("reservations", JSON.stringify(storedReservations));
-        }
-    };
 
     const handleClick = () => {
         if (availableTables > 0) {
-            reserveTable(); 
+            navigate('/reserve', { state: { restaurant } }); 
         }
-        navigate('/reserve'); 
     };
 
     return (

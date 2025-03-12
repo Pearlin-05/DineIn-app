@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function Reservation() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const restaurant = location.state?.restaurant || {}; 
 
   const [formData, setFormData] = useState({
     name: "",
@@ -32,28 +34,53 @@ function Reservation() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      setSuccessMessage("Reservation successful!");
-      setTimeout(() => {
-        navigate("/home");
-      }, 2000); 
+        setSuccessMessage("Reservation successful!");
+
+        const reservationData = {
+            ...formData,
+            restaurantName: restaurant.name,
+            restaurantImage: restaurant.image
+        };
+
+        const storedReservations = JSON.parse(localStorage.getItem("reservations")) || [];
+
+        // ✅ Prevent duplicate reservation
+        const isDuplicate = storedReservations.some(
+            res => res.restaurantName === reservationData.restaurantName && 
+                   res.name === reservationData.name &&
+                   res.date === reservationData.date &&
+                   res.time === reservationData.time
+        );
+
+        if (!isDuplicate) {
+            storedReservations.push(reservationData);
+            localStorage.setItem("reservations", JSON.stringify(storedReservations));
+        }
+
+        setTimeout(() => {
+            navigate("/home");
+        }, 2000);
     }
-  };
+};
 
   return (
     <div className='bg'>
       <div className='register-container'>
         <div className='register-form'>
-          <h1>Reserve</h1>
+          <h1>Reserve at {restaurant.name || "Unknown Restaurant"}</h1>
+          {restaurant.image && <img src={restaurant.image} alt={restaurant.name} className="restaurant-img" />}
+          
           {successMessage && (
             <div className="success-box">
               <p>{successMessage}</p>
             </div>
           )}
+
           <form onSubmit={handleSubmit}>
             <input
               type="text"
               name="name"
-              placeholder='Name'
+              placeholder='Your Name'
               className='form-control'
               value={formData.name}
               onChange={handleChange}
@@ -63,7 +90,6 @@ function Reservation() {
             <input
               type='date'
               name='date'
-              placeholder='Date'
               className='form-control'
               value={formData.date}
               onChange={handleChange}
@@ -73,7 +99,6 @@ function Reservation() {
             <input
               type='time'
               name='time'
-              placeholder='Time'
               className='form-control'
               value={formData.time}
               onChange={handleChange}
@@ -92,8 +117,6 @@ function Reservation() {
             
             <button type='submit'>Reserve</button>
           </form>
-
-        
         </div>
       </div>
     </div>
